@@ -1,20 +1,9 @@
-import  React, { Component } from 'react';
+import  React from 'react';
 import { Card, CardImg, CardBody, CardText, CardTitle } from 'reactstrap';
-import { DISHES } from '../shared/dishes';
 
 
-class DishDetail extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { 
-            dishes: DISHES,
-            curTime: new Date().toDateString()
-         };
-
-        //  const lstcom = this.state.dishes.map(dish => dish.comments);
-    }  
-
-    renderDish(dish){
+ 
+    function RenderDish({dish}){
         if(dish!=null){
           return (
             <Card>
@@ -39,17 +28,19 @@ class DishDetail extends Component {
         }
       }
 
-      renderComment(dishcom){
+      function RenderComment({dishcom}){
+
+        const curTime = new Date().toDateString();
         // const com = this.dishcom.map(com=>com.comments)
         if(dishcom!=null){
           const com= dishcom.map((com =>{
             return(
-              <div key={com.ic}>
+              <div key={com.id}>
                 <div>
                   {com.comment}
                 </div>
                 <div>
-                  -- {com.author}, {this.state.curTime}
+                  -- {com.author}, {curTime}
                 </div>
               </div>
               
@@ -70,34 +61,30 @@ class DishDetail extends Component {
         }
       }
 
-        render() {  
-          if (this.props.dish) {
-              const dish = this.props.dish;
-              const dishdetail = this.renderDish(dish);
-              const dishcomments = this.renderComment(dish.comments);
-              return (
-                  <div className="container">
-                    <div className="row">
-                    <div className="col-12 col-md-5 mt-2">
-                      {dishdetail}
-                     
-                    </div>
-                    <div className="col-12 col-md-5 mt-2">
-                      <h4>Comments</h4>
-                      {dishcomments}
-                    </div>  
-                    </div> 
-                  </div>
-               
-              );
-          }
-          else {
-              return (<div>no found</div>);
-          }
+      const DishDetail = (props) =>{
+        if (props.dish) {
+          // const dish = props.dish;
+          // const dishdetail = this.RenderDish(dish);
+          // const dishcomments = this.RenderComment(dish.comments);
+          return (
+              <div className="container">
+                <div className="row">
+                <div className="col-12 col-md-5 mt-2">
+                  {/* {dishdetail} */}
+                  <RenderDish dish={props.dish} />
+                </div>
+                <div className="col-12 col-md-5 mt-2">
+                  <h4>Comments</h4>
+                  {/* {dishcomments} */}
+                  <RenderComment dishcom={props.dish.comments}/>
+                </div>  
+                </div> 
+              </div>
+           
+          );
       }
-
-   
-}       
-
-
+      else {
+          return (<div>no found</div>);
+      }
+    }
 export default DishDetail;
