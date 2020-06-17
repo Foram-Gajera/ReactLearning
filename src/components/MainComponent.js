@@ -8,6 +8,7 @@ import { COMMENTS } from '../shared/comments';
 import Header from './HeaderComponent';
 import Footer from './FooterComponent';
 import Contact from './ContactComponent';
+import About from './AboutComponent';
 import '../App.css';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Home from './HomeComponent';
@@ -43,9 +44,6 @@ class Main extends Component {
         <Home dish={this.state.dishes.filter((dish)=>dish.featured)[0] }
               promotion={this.state.promotions.filter((promo)=>promo.featured)[0] }
               leader={this.state.leaders.filter((leader)=>leader.featured)[0] } /> 
-
-        
-        
       );
     }
     return (
@@ -57,6 +55,7 @@ class Main extends Component {
           <Route exact path="/menu" component={()=><Menu dishes={this.state.dishes} />} />
           <Route path="/menu/:dishId" component={DishWithId} />
           <Route path="/contactus" component={Contact} />
+          <Route path="/aboutus" component={()=><About leaders={this.state.leaders} />} />
           <Redirect to="/home" />
         </Switch>
    
