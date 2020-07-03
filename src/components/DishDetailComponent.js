@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardImg,
@@ -7,8 +7,19 @@ import {
   CardTitle,
   BreadcrumbItem,
   Breadcrumb,
+  Button,
+  Modal,
+  Row,
+  ModalBody,
+  ModalHeader,
+  Label,
 } from "reactstrap";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { LocalForm, Errors, Control } from "react-redux-form";
+
+const required = (val) => val && val.length;
+const minLength = (len) => (val) => !val || val.length >= len;
+const maxLength = (len) => (val) => !val || val.length <= len;
 
 function RenderDish({ dish }) {
   if (dish != null) {
@@ -47,10 +58,14 @@ function RenderComment({ dishcom }) {
 }
 
 const DishDetail = (props) => {
+  const [show, setShow] = useState(false);
+  //  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const toggleModal = () => setShow(!show);
+
+  const handleSubmit = (values) => alert(JSON.stringify(values));
+
   if (props.dish) {
-    // const dish = props.dish;
-    // const dishdetail = this.RenderDish(dish);
-    // const dishcomments = this.RenderComment(dish.comments);
     return (
       <div className="container">
         <div className="row">
@@ -74,8 +89,80 @@ const DishDetail = (props) => {
             <h4>Comments</h4>
             {/* {dishcomments} */}
             <RenderComment dishcom={props.comments} />
+            <Button
+              className="btn btn-light border"
+              type="button"
+              onClick={handleShow}
+            >
+              <span className="fa fa-pencil"></span> &nbsp;Submit Comment
+            </Button>
           </div>
         </div>
+        <Modal isOpen={show} toggle={toggleModal}>
+          <ModalHeader toggle={toggleModal}>Comment</ModalHeader>
+          <ModalBody>
+            <LocalForm
+              className="p-2"
+              onSubmit={(values) => handleSubmit(values)}
+            >
+              <Row className="form-group">
+                <Label htmlFor="rate">Rating</Label>
+                <Control.select
+                  className="form-control"
+                  model=".rate"
+                  name="rate"
+                >
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5" selected>5</option>
+                </Control.select>
+              </Row>
+              <Row className="form-group">
+                <Label htmlFor="authername">Name</Label>
+                <Control.text
+                  className="form-control"
+                  model=".authername"
+                  id="authername"
+                  name="authername"
+                  placeholder="Your Name"
+                  validators={{
+                    required,
+                    minLength: minLength(3),
+                    maxLength: maxLength(12),
+                  }}
+                />
+                <Errors
+                  className="text-danger"
+                  model=".authername"
+                  show="touched"
+                  messages={{
+                    required: "Required field",
+                    minLength: "must requires 3 or more characters",
+                    maxLength: "not allowed more then 12 characters",
+                  }}
+                />
+              </Row>
+
+              <Row className="form-group">
+                <Label htmlFor="message">Message</Label>
+                <Control.textarea
+                  className="form-control"
+                  rows="6"
+                  id="message"
+                  name="message"
+                  model=".message"
+                />
+              </Row>
+              <Row>
+                <Button className="btn btn-info" type="submit">
+                  Submit
+                </Button>
+              </Row>
+            </LocalForm>
+          </ModalBody>
+        </Modal>
       </div>
     );
   } else {
