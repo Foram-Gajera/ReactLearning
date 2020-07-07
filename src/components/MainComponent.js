@@ -9,8 +9,9 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Home from './HomeComponent';
 import DishDetail from './DishDetailComponent';
 import { connect } from 'react-redux';
-import { addComment, fetchDishes, fetchComments, fetchPromotions, fetchLeaders } from '../redux/ActionCreators';
+import { postComment, fetchDishes, fetchComments, fetchPromotions, fetchLeaders, postFeedback } from '../redux/ActionCreators';
 import { actions } from 'react-redux-form';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 const MapStateToProps = state => {
   return {
@@ -23,7 +24,9 @@ const MapStateToProps = state => {
 }
 
 const MapDispatchToProps = dispatch => ({
-    addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)),
+  postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
+  postFeedback: (fname, lname, telnum, email, agree, cType, feedbackmsg, date) => 
+                dispatch(postFeedback(fname, lname, telnum, email, agree, cType, feedbackmsg, date)),
     fetchDishes: () => { dispatch(fetchDishes())},
     fetchComments: () => { dispatch(fetchComments())},
     fetchLeaders: () => { dispatch(fetchLeaders())},
@@ -59,7 +62,7 @@ class Main extends Component {
         errMess = {this.props.dishes.errmess}
         comments={this.props.comments.comments.filter((com) => com.dishId === parseInt(match.params.dishId,10))} 
         commentsErrMess={this.props.comments.errMess}
-        addComment={this.props.addComment}/>
+        postComment={this.props.postComment}/>
      
       );
     }
@@ -83,14 +86,18 @@ class Main extends Component {
       <div>
         <Header />
       
-        <Switch>
-          <Route path="/home" component={HomePage}/>
-          <Route exact path="/menu" component={()=><Menu dishes={this.props.dishes} />} />
-          <Route path="/menu/:dishId" component={DishWithId} />
-          <Route path="/contactus" component={()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm} />} />
-          <Route path="/aboutus" component={()=><About leaders={this.props.leaders} isLoading={this.props.leaders.isLoading} errMess={this.props.leaders.errMess}/>} />
-          <Redirect to="/home" />
-        </Switch>
+        <TransitionGroup>
+            <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
+              <Switch>
+                <Route path="/home" component={HomePage}/>
+                <Route exact path="/menu" component={()=><Menu dishes={this.props.dishes} />} />
+                <Route path="/menu/:dishId" component={DishWithId} />
+                <Route path="/contactus" component={()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm} postFeedback={this.props.postFeedback} />} />
+                <Route path="/aboutus" component={()=><About leaders={this.props.leaders} isLoading={this.props.leaders.isLoading} errMess={this.props.leaders.errMess}/>} />
+                <Redirect to="/home" />
+              </Switch>
+        </CSSTransition>
+          </TransitionGroup>
    
         {/* <Menu dishes={this.state.dishes} onClick={(dishId) => this.onDishSelect(dishId)} />
         <DishDetail dish={this.state.dishes.filter((dish) => dish.id === this.state.selectedDish)[0]} /> */}

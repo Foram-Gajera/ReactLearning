@@ -18,6 +18,7 @@ import { Link } from "react-router-dom";
 import { LocalForm, Errors, Control } from "react-redux-form";
 import { Loading } from "./LoadingComponent";
 import { baseUrl } from '../shared/baseUrl';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 
 const required = (val) => val && val.length;
@@ -27,6 +28,11 @@ const maxLength = (len) => (val) => !val || val.length <= len;
 function RenderDish({ dish }) {
    if (dish != null) {
     return (
+      <FadeTransform
+      in
+      transformProps={{
+          exitTransform: 'scale(0.5) translateY(-50%)'
+      }}>
       <Card>
         <CardImg top src={baseUrl + dish.image} alt={dish.name} />
         <CardBody>
@@ -34,33 +40,40 @@ function RenderDish({ dish }) {
           <CardText>{dish.description}</CardText>
         </CardBody>
       </Card>
+      </FadeTransform>
     );
   } else {
     return <div>No Dish Found</div>;
   }
 }
 
-function RenderComment({ dishcom, addComment, dishId }) {
+function RenderComment({ dishcom, postComment, dishId }) {
   const curTime = new Date().toDateString();
   // const com = this.dishcom.map(com=>com.comments)
   if (dishcom != null) {
     const com = dishcom.map((com) => {
       return (
-        <div key={com.id}>
-          <div>{com.comment}</div>
-          <div>
-            -- {com.author}, {curTime}
-          </div>
+        <div>
+            <div key={com.id}>
+              <div>{com.comment}</div>
+              <div>
+                -- {com.author}, {curTime}
+              </div>
+            </div>
         </div>
       );
     });
     return (
+      <Stagger in>
       <div>
         {com}
+        <Fade in>
         <div>
-          <CommentForm dishId={dishId} addComment={addComment} />
+          <CommentForm dishId={dishId} postComment ={postComment} />
         </div>
+        </Fade>
       </div>
+      </Stagger>
     );
   } else {
     return <div>No comment Found</div>;
@@ -88,7 +101,7 @@ class CommentForm extends Component {
   handleSubmit(values) {
     this.toggleModal();
     alert(JSON.stringify(values));
-    this.props.addComment(
+    this.props.postComment(
       this.props.dishId,
       values.rating,
       values.author,
@@ -225,7 +238,7 @@ const DishDetail = (props) => {
             {/* {dishcomments} */}
             <RenderComment
               dishcom={props.comments}
-              addComment={props.addComment}
+              postComment={props.postComment}
               dishId={props.dish.id}
             />
           </div>
