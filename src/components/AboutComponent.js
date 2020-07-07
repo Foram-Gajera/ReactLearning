@@ -8,9 +8,14 @@ import {
   Media,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { Loading } from './LoadingComponent';
 
-function RenderLeader({ leader }) {
-  if (leader != null) {
+function RenderLeader({ leader, isLoading, errMess}) {
+  if (isLoading) {
+    return <Loading />;
+  } else if (errMess) {
+    return <h4>{errMess}</h4>;
+  } else if (leader != null) {
     const leaderobj = leader.map((lead) => {
       return (
         <div key={lead.id}>
@@ -109,10 +114,7 @@ function About(props) {
           <h2>Corporate Leadership</h2>
         </div>
         <div className="col-12">
-          <RenderLeader leader={props.leaders} />
-          {/* <Media list>
-                        {leaders}
-                    </Media> */}
+          <RenderLeader leader={props.leaders.leaders} isLoading={props.isLoading} errMess={props.errMess}/>
         </div>
       </div>
     </div>
