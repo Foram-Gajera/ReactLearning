@@ -2,6 +2,7 @@ import * as ActionTypes from './ActionTypes';
 import { DISHES } from '../shared/dishes';
 import { LEADERS } from '../shared/leaders';
 import { PROMOTIONS } from '../shared/promotions';
+import { baseUrl } from '../shared/baseUrl';
 
 // import { Dishes } from './dishes';
 
@@ -21,9 +22,9 @@ export const fetchDishes = () => (dispatch) => {
 
     dispatch(dishesLoading(true));
 
-    setTimeout(() => {
-        dispatch(addDishes(DISHES));
-    }, 2000);
+    return fetch(baseUrl + 'dishes')
+    .then(response => response.json())
+    .then(dishes => dispatch(addDishes(dishes)));
 }
 
 export const dishesLoading = () => ({
@@ -41,6 +42,25 @@ export const addDishes = (dishes) => ({
 });
 
 
+/////////////Comments//////////////////
+export const fetchComments = () => (dispatch) => {    
+    return fetch(baseUrl + 'comments')
+    .then(response => response.json())
+    .then(comments => dispatch(addComments(comments)));
+};
+
+export const commentsFailed = (errmess) => ({
+    type: ActionTypes.COMMENTS_FAILED,
+    payload: errmess
+});
+
+export const addComments = (comments) => ({
+    type: ActionTypes.ADD_COMMENTS,
+    payload: comments
+});
+
+
+
 /////////////Promotions///////////////////
 
 
@@ -48,9 +68,9 @@ export const fetchPromotions = () => (dispatch) => {
 
     dispatch(promotionsLoading(true));
 
-    setTimeout(() => {
-        dispatch(addPromotions(PROMOTIONS));
-    }, 2000);
+    return fetch(baseUrl + 'promotions')
+    .then(response => response.json())
+    .then(promotions => dispatch(addPromotions(promotions)));
 }
 
 export const promotionsLoading = () => ({
@@ -63,7 +83,7 @@ export const promotionsFailed = (errmess) => ({
 });
 
 export const addPromotions = (promotions) => ({
-    type: ActionTypes.ADD_DISHES,
+    type: ActionTypes.ADD_PROMOTIONS,
     payload: promotions
 });
 
@@ -75,9 +95,9 @@ export const fetchLeaders = () => (dispatch) => {
 
     dispatch(leadersLoading(true));
 
-    setTimeout(() => {
-        dispatch(addLeaders(LEADERS));
-    }, 2000);
+    return fetch(baseUrl + 'leaders')
+    .then(response => response.json())
+    .then(leaders => dispatch(addLeaders(leaders)));
 }
 
 export const leadersLoading = () => ({
@@ -90,6 +110,6 @@ export const leadersFailed = (errmess) => ({
 });
 
 export const addLeaders = (leaders) => ({
-    type: ActionTypes.ADD_DISHES,
+    type: ActionTypes.ADD_LEADERS,
     payload: leaders
 });

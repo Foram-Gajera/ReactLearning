@@ -8,6 +8,7 @@ import {
   Media,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { baseUrl } from '../shared/baseUrl';
 import { Loading } from './LoadingComponent';
 
 function RenderLeader({ leader, isLoading, errMess}) {
@@ -20,7 +21,7 @@ function RenderLeader({ leader, isLoading, errMess}) {
       return (
         <div key={lead.id}>
           <Media>
-            <Media object src={lead.image} alt={lead.name} className="m-4" />
+            <Media object src={baseUrl + lead.image} alt={lead.name} className="m-4" />
             <Media body className="m-3">
               <Media heading>{lead.name}</Media>
               <Media title className="mb-3">{lead.designation}</Media>
