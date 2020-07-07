@@ -10,6 +10,7 @@ import Home from './HomeComponent';
 import DishDetail from './DishDetailComponent';
 import { connect } from 'react-redux';
 import { addComment, fetchDishes, fetchPromotions, fetchLeaders } from '../redux/ActionCreators';
+import { actions } from 'react-redux-form';
 
 const MapStateToProps = state => {
   return {
@@ -25,7 +26,8 @@ const MapDispatchToProps = dispatch => ({
     addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)),
     fetchDishes: () => { dispatch(fetchDishes())},
     fetchLeaders: () => { dispatch(fetchLeaders())},
-    fetchPromotions: () => { dispatch(fetchPromotions())}
+    fetchPromotions: () => { dispatch(fetchPromotions())},
+    resetFeedbackForm: () => { dispatch(actions.reset('feedback'))}
 });
 
 
@@ -82,7 +84,7 @@ class Main extends Component {
           <Route path="/home" component={HomePage}/>
           <Route exact path="/menu" component={()=><Menu dishes={this.props.dishes} />} />
           <Route path="/menu/:dishId" component={DishWithId} />
-          <Route path="/contactus" component={Contact} />
+          <Route path="/contactus" component={()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm} />} />
           <Route path="/aboutus" component={()=><About leaders={this.props.leaders} isLoading={this.props.leaders.isLoading} errMess={this.props.leaders.errMess}/>} />
           <Redirect to="/home" />
         </Switch>
